@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu_utilization_high" {
   namespace           = "AWS/ECS"
   period              = 300 # 5 minutes (in seconds)
   statistic           = "Average"
-  threshold           = 0 # 70% CPU Utilization
+  threshold           = 70 # 70% CPU Utilization
   alarm_description   = "Alarm when ECS service CPU utilization is above 70%"
 
   dimensions = {

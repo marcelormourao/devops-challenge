@@ -12,6 +12,18 @@ on:
     paths:
       - 'infra/**' # Only trigger if changes are in the 'infra' directory
 
+  workflow_dispatch: # Allows manual trigger of the workflow
+    inputs:
+      terraform_action:
+        description: 'Terraform Action to perform'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - 'plan'
+          - 'apply'
+          - 'destroy'
+
 permissions:
   id-token: write # This is essential for OIDC authentication with AWS
   contents: read  # Allows checkout of repository code
@@ -55,9 +67,16 @@ jobs:
         run: terraform plan -no-color -out=tfplan.out
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-      # - name: Terraform Apply
-      #   id: apply
-      #   # Only run apply on push to the main branch
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #   run: terraform apply -auto-approve tfplan.out
-      #   working-directory: ${{ env.TF_WORKING_DIR }}
+      - name: Terraform Apply
+        id: apply
+        # Only run apply on push to the main branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan.out
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Destroy
+        id: destroy
+        # Only run destroy when 'destroy' is explicitly chosen via workflow_dispatch
+        if: github.event.inputs.terraform_action == 'destroy'
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.TF_WORKING_DIR }}

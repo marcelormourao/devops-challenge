@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '**' # Include all files by default
+      # - '**' # Include all files by default
       - '!infra/**' # Exclude terraform changes
   pull_request:
     branches: [ main ]
     paths:
-      - '**' # Include all files by default
+      # - '**' # Include all files by default
       - '!infra/**' # Exclude terraform changes
 
 env:

@@ -2,4 +2,8 @@
 
 Still needs improvements but it works.
 
-![Parcial Result](./works.png)
+![Parcial Result](./img/works.png)
+
+## Diagram
+
+![Diagram](./img/diagram.png)

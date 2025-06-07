@@ -1,0 +1,68 @@
+@startuml
+component Internet
+
+rectangle "AWS Cloud" {
+    rectangle "VPC" {
+        component IGW
+        component PublicSubnets
+        component PrivateSubnets
+        component NATGateway
+
+        component ALB
+        component Listener
+        component TargetGroup
+
+        component ECSCluster
+        component ECSService
+        component TaskDef
+        
+        component ECR
+        component CloudWatchLogGroup
+    }
+
+    component ALBSG
+    component ECSTaskSG
+    component ECSTaskRole
+
+    component CloudWatchAlarm
+    component SNSTopic
+    component Email
+
+    ' Connections
+    Internet --> ALB
+
+    IGW --- PublicSubnets
+    PublicSubnets --- NATGateway
+    NATGateway --- PrivateSubnets
+
+    ALB --- PublicSubnets
+    Listener --- ALB
+    TargetGroup --- Listener
+    TargetGroup --- PrivateSubnets
+    
+    ECSService --- ECSCluster
+    TaskDef --- ECSService
+    ECSService --- PrivateSubnets : "manages tasks in"
+    
+    TaskDef --- ECR : "references"
+    ECSService --- ECR : "pulls from"
+    ECSService --- CloudWatchLogGroup : "sends logs to"
+    ECSService --- NATGateway : "outbound via"
+
+    ALB --- ALBSG
+    ECSService --- ECSTaskSG : "uses"
+    
+    ALBSG --- ALB
+    ALBSG --- ECSTaskSG : "allows traffic to"
+
+    ECSTaskSG --- ALBSG : "from"
+    ECSTaskSG --- NATGateway : "outbound via"
+
+    ECSTaskRole --- ECR : "permissions for"
+    ECSTaskRole --- CloudWatchLogGroup : "permissions for"
+
+    CloudWatchAlarm --- ECSService : "monitors"
+    CloudWatchAlarm --- SNSTopic : "notifies"
+    SNSTopic --- Email
+}
+@enduml

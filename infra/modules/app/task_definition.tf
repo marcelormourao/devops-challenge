@@ -7,10 +7,10 @@ resource "aws_ecs_task_definition" "task" {
   memory                   = var.memory
   execution_role_arn       = var.execution_role_arn
   task_role_arn            = var.task_role_arn
-  container_definitions    = jsonencode([
+  container_definitions = jsonencode([
     {
-      name      = var.name
-      image     = var.container_image
+      name  = var.name
+      image = var.container_image
       portMappings = [{
         containerPort = var.container_port
         hostPort      = var.container_port

@@ -1,9 +1,9 @@
 resource "aws_lb_target_group" "ecs_app_tg" {
-  name     = "${var.name}-tg"
-  port     = var.container_port # The port the container exposes
-  protocol = "HTTP"             # Protocol for ALB to task communication
-  vpc_id   = aws_vpc.vpc.id
-  target_type = "ip"            # ESSENTIAL for Fargate tasks
+  name        = "${var.name}-tg"
+  port        = var.container_port # The port the container exposes
+  protocol    = "HTTP"             # Protocol for ALB to task communication
+  vpc_id      = aws_vpc.vpc.id
+  target_type = "ip" # ESSENTIAL for Fargate tasks
 
   health_check {
     path                = "/" # Or your specific health check endpoint (e.g., /health)

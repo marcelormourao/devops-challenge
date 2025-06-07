@@ -61,6 +61,12 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.TF_WORKING_DIR }}
 
+      # Fail pipeline if terraform files are not formatted
+      - name: Terraform fmt check
+        id: fmtcheck
+        run: terraform fmt -check
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
       - name: Terraform Plan
         id: plan
         # Plan on every push and pull request

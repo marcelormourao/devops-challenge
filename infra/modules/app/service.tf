@@ -11,10 +11,10 @@ resource "aws_ecs_service" "service" {
     security_groups  = [aws_security_group.ecs_task_sg.id]
     assign_public_ip = true # must be false later
   }
-#   load_balancer {
-#     # target_group_arn = var.target_group_arn
-#     container_name   = var.name
-#     container_port   = var.container_port
-#   }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_app_tg.arn
+    container_name   = var.name
+    container_port   = var.container_port
+  }
   depends_on = [aws_ecs_task_definition.task]
 }

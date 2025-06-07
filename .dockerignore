@@ -1,0 +1,8 @@
+# Exclude everything by default
+**/*
+
+# Explicitly include necessary Node.js files and directories
+!node_modules/
+!app.js
+!package.json
+!package-lock.json

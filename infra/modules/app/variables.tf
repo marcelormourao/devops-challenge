@@ -75,3 +75,8 @@ variable "aws_region" {
   type        = string
 }
 
+variable "alarm_email_address" {
+  description = "Email to recieve alarm notifications"
+  type        = string
+}
+

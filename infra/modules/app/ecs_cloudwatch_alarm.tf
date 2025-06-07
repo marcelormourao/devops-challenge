@@ -17,6 +17,6 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu_utilization_high" {
   unit = "Percent"
 
   # Optional: Configure actions to take when the alarm state changes
-  # alarm_actions = [aws_sns_topic.alarm_notifications.arn] # Replace with your SNS topic ARN
+  alarm_actions = [aws_sns_topic.alarm_notifications.arn]
   # ok_actions    = [aws_sns_topic.alarm_notifications.arn]
 }

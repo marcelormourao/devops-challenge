@@ -17,14 +17,14 @@ resource "aws_ecs_task_definition" "task" {
         protocol      = "tcp"
       }]
       essential = true
-      # logConfiguration = {
-      #   logDriver = "awslogs"
-      #   options = {
-      #     awslogs-group         = "/ecs/${var.name}"
-      #     awslogs-region        = var.aws_region
-      #     awslogs-stream-prefix = "ecs"
-      #   }
-      # }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_task_logs.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }

@@ -4,16 +4,18 @@ on:
   push:
     branches: [ main ]
     paths:
-      # - '**' # Include all files by default
       - '!infra/**' # Exclude terraform changes
+      - '**'
   pull_request:
     branches: [ main ]
     paths:
-      # - '**' # Include all files by default
       - '!infra/**' # Exclude terraform changes
+      - '**'
 
 env:
   APP_VERSION: 1.0.0
+  AWS_REGION: us-west-2
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
 
 permissions:
   id-token: write # For OIDC
@@ -22,7 +24,6 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: npm ci # 'npm ci' is preferred for CI/CD environments as it uses package-lock.json
 
-      - name: Run tests (optional)
+      - name: Run tests
         run: npm test
 
       - name: Set up Docker Buildx
@@ -45,11 +46,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
-          aws-region: us-west-2
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Build Docker image
         run: |
-          docker build -t 411053069660.dkr.ecr.us-west-2.amazonaws.com/devops-challenge:${{ env.APP_VERSION }} .
+          docker build -t ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/devops-challenge:${{ env.APP_VERSION }} .
 
       - name: Log in to Amazon ECR
         id: login-ecr
@@ -57,5 +58,5 @@ jobs:
 
       - name: Push Docker image to ECR
         run: |
-          docker push 411053069660.dkr.ecr.us-west-2.amazonaws.com/devops-challenge:${{ env.APP_VERSION }}
+          docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/devops-challenge:${{ env.APP_VERSION }}
     

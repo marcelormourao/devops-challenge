@@ -35,6 +35,7 @@ jobs:
       TF_VAR_aws_region: us-west-2
       TF_WORKING_DIR: infra/ # Define the root directory of your Terraform code
       bucket_name: marcelo-devops-challenge
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
 
     steps:
       - name: Checkout Repository
@@ -43,8 +44,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::411053069660:role/devops-challenge-role
-          aws-region: us-west-2 # Replace with your target AWS region
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/devops-challenge-role
+          aws-region: ${{ env.TF_VAR_aws_region }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
